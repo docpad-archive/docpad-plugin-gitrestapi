@@ -16,11 +16,11 @@ docpad install gitrestapi
 
 
 ## History
-[You can discover the history inside the `History.md` file](https://github.com/bevry/docpad-plugin-multiplelayouts/blob/master/History.md#files)
+[You can discover the history inside the `History.md` file](https://github.com/bevry/docpad-plugin-gitrestapi/blob/master/History.md#files)
 
 
 ## Contributing
-[You can discover the contributing instructions inside the `Contributing.md` file](https://github.com/bevry/docpad-plugin-multiplelayouts/blob/master/Contributing.md#files)
+[You can discover the contributing instructions inside the `Contributing.md` file](https://github.com/bevry/docpad-plugin-gitrestapi/blob/master/Contributing.md#files)
 
 
 ## License
