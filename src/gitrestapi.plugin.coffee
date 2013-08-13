@@ -1,54 +1,80 @@
 # Export Plugin
 module.exports = (BasePlugin) ->
-	# Define Plugin
+	# Requires
+	pathUtil = require('path')
 	gitpad = require('gitpad')
-	userDir = ''
 
+	# Define Plugin
 	class GitRestAPI extends BasePlugin
 		# Plugin name
 		name: 'gitrestapi'
+
+		# Plugin configuration
 		config:
-			path: '/git/'
-			debug: false
+			channel: '/git'
+			repositoryPath: null
 
+		# DocPad Ready Event
 		docpadReady: (opts, next) ->
+			# Prepare
 			docpad = @docpad
+			config = @getConfig()
 			docpadConfig = docpad.getConfig()
-			userDir = docpadConfig.documentsPaths[0]
-			that = @
+			repositoryPath = pathUtil.resolve(docpadConfig.rootPath, config.repositoryPath or '')
 
-			gitpad.init userDir, (err, status) ->
-				console.log 'Error initializing Git: ' + err  if err
-				console.log 'Git Status:\n' + JSON.stringify(status) + '\n'  if that.config.debug and status
-				next()
+			# Initialise git repository
+			gitpad.init repositoryPath, (err, status) ->
+				docpad.log('err', 'Error initializing Git:', err)  if err
+				docpad.log('debug', 'Git Status:', status)
+				return next()
 
-			#Chain
+			# Chain
 			@
 
+		# Server Extend Event
 		serverExtend: (opts) ->
+			# Prepare
 			docpad = @docpad
-			docpadConfig = docpad.getConfig()
-			server = opts.server
+			config = @getConfig()
+			{server} = opts
 
-			server.post @config.path + ':action/:file?', (req, res) ->
-				origAction = action = req.params.action
-				file = req.params.file
+			server.all '#{config.channel}/:action/:file?', (req, res) ->
+				# Prepare
+				action = req.params.action
+				fileRelativePath = req.params.file
+				validActions = ['save', 'remove']
 
-				#Ensure that we have valid parameters
-				validActions = ['save', 'update', 'remove']
+				# Aliases
 				unless action
-					res.send(success: false, message: 'Please specifiy an action to perform')
+					if req.method is 'delete'
+						action = 'remove'
+					else
+						action = 'save'
+				else if action is 'update'
+					action = 'save'
+				else if action is 'delete'
+					action = 'remove'
+
+				# Ensure that we have valid parameters
+				unless fileRelativePath
+					return res.send(success: false, message: 'Please specify a file to perform an action against')
 				unless action in validActions
-					return res.send(success: false, message: 'Please specifiy a valid action to perform, these currently include \'' + validActions.join('\', \'') + '\'')
-				unless file and docpad.getFile(relativePath: file)
+					return res.send(success: false, message: 'Please specifiy a valid action to perform, these currently include: '+validActions.join(','))
+				file = docpad.getFile(relativePath: fileRelativePath)
+				unless file
 					return res.send(success: false, message: 'That file does not exist')
 
-				#Update are just saves
-				action = 'save'  if action == 'update'
+				# Update are just saves
+				gitAction = gitpad[action+'File']
+				fileFullPath = file.get('fullPath')
 
-				#Call gitpad
-				gitpad[action + 'File'] userDir + '/' + file, 'User initiated ' + origAction + ' of ' + file, (err, msg) ->
-					console.log err  if err
-					res.send(success: !err, message: err or 'Action [\'' + origAction + '\'] completed successfully')
-			#Chain
+				# Call gitpad
+				gitAction fileFullPath, "User initiated #{action} on #{fileRelativePath}", (err, msg) ->
+					# Check
+					docpad.log('err', err)  if err
+
+					# Send
+					res.send(success: !err, message: err or "#{action} on #{fileRelativePath} completed successfully")
+
+			# Chain
 			@

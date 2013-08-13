@@ -6,14 +6,17 @@
   "keywords": [
     "docpad",
     "docpad-plugin",
-    "layouts",
-    "Git",
-    "Git-rest-api",
-    "rest-api"
+    "git", "reset"
   ],
-  "author": "Neil Taylor <neil.t@myplanetdigital.com> http://www.myplanetdigital.com",
-  "maintainers": [],
-  "contributors": [],
+  "author": "Bevry Pty Ltd <us@bevry.me> (http://bevry.me)",
+  "maintainers": [
+    "Neil Taylor <neil.t@myplanetdigital.com> (https://github.com/neilbaylorrulez)",
+    "Benjamin Lupton <b@lupton.cc> (https://github.com/balupton)"
+  ],
+  "contributors": [
+    "Neil Taylor <neil.t@myplanetdigital.com> (https://github.com/neilbaylorrulez)",
+    "Benjamin Lupton <b@lupton.cc> (https://github.com/balupton)"
+  ],
   "bugs": {
     "url": "https://github.com/docpad/docpad-plugin-gitrestapi/issues"
   },
@@ -22,16 +25,17 @@
     "url": "https://github.com/docpad/docpad-plugin-gitrestapi/issues"
   },
   "engines": {
-    "node": ">=0.8",
-    "docpad": ">=6"
+    "node": ">=0.8"
   },
   "dependencies": {
   	"gitpad": "git://github.com/d9su/gitpad.git"
   },
+  "peerDependencies": {
+    "docpad": ">=6 <7"
+  },
   "devDependencies": {
     "coffee-script": "~1.6.2",
-    "joe": "~1.2.0",
-    "joe-reporter-console": "~1.2.1"
+    "docpad": ">=6 <7"
   },
   "main": "./out/gitrestapi.plugin.js",
   "scripts": {
