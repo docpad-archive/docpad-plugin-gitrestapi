@@ -6,7 +6,7 @@
   "keywords": [
     "docpad",
     "docpad-plugin",
-    "git", "rest"
+    "git", "rest", "api"
   ],
   "author": "Bevry Pty Ltd <us@bevry.me> (http://bevry.me)",
   "maintainers": [
