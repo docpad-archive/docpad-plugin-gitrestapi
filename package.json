@@ -37,8 +37,5 @@
     "coffee-script": "~1.6.2",
     "docpad": ">=6 <7"
   },
-  "main": "./out/gitrestapi.plugin.js",
-  "scripts": {
-    "test": "node ./out/gitrestapi.test.js"
-  }
+  "main": "./out/gitrestapi.plugin.js"
 }
